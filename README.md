@@ -485,11 +485,18 @@ Formato da resposta de `/api/quotes`:
 ## 14. Como testar
 
 ```bash
-npm run lint       # ESLint (46 arquivos)
-npm run typecheck  # TypeScript em modo strict
-npm test           # testes unitários
-npm run build      # build de produção
+npm run lint             # ESLint
+npm run typecheck        # TypeScript em modo strict
+npm test                 # testes unitários
+npm run build            # build de produção
+npm run check:awesomeapi # verifica se o token da AwesomeAPI é aceito
 ```
+
+O `check:awesomeapi` existe porque essa é a única credencial cujo comportamento
+muda entre ambiente local e hospedagem: sem token o acesso público funciona na
+sua máquina e falha com HTTP 429 em serverless. O script compara o acesso
+público com o autenticado e diz se a chave é válida, sem imprimir o valor —
+assim o problema aparece antes do deploy, e não depois.
 
 Os testes cobrem:
 

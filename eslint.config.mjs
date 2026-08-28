@@ -29,6 +29,14 @@ const eslintConfig = [
       ],
     },
   },
+  {
+    // Scripts de linha de comando: a saida para o terminal E a interface deles,
+    // entao `console.log` aqui e o uso correto, nao um vazamento acidental.
+    files: ["scripts/**/*.{js,mjs,ts}"],
+    rules: {
+      "no-console": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

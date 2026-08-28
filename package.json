@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"tests/**/*.test.ts\""
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "check:awesomeapi": "node --env-file=.env.local scripts/check-awesomeapi.mjs"
   },
   "dependencies": {
     "next": "15.5.23",
