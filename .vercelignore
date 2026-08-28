@@ -1,0 +1,20 @@
+# Arquivos que NUNCA devem ser enviados no deploy.
+# O CLI da Vercel faz upload da pasta local; sem esta lista ele poderia
+# carregar segredos ou artefatos de build desnecessarios.
+
+# Segredos: as variaveis de producao sao definidas no painel da Vercel,
+# nunca por arquivo enviado junto com o codigo.
+.env
+.env.*
+!.env.example
+
+# Dependencias e artefatos: a Vercel instala e compila do zero.
+node_modules
+.next
+out
+coverage
+*.tsbuildinfo
+
+# Nao fazem parte do runtime da aplicacao.
+tests
+docs/prints
