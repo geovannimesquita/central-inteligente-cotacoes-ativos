@@ -33,3 +33,6 @@ yarn-error.log*
 
 # configuracao local do Claude Code (ferramenta, nao faz parte do projeto)
 .claude/
+
+.vercel
+.env*

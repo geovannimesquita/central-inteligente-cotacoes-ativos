@@ -28,7 +28,7 @@ alertas em um banco no-code (Airtable) e executa uma automação baseada nas cot
 13. [Como executar](#13-como-executar)
 14. [Como testar](#14-como-testar)
 15. [Como configurar o Airtable](#15-como-configurar-o-airtable)
-16. [Como gerar uma chave Demo da CoinGecko](#16-como-gerar-uma-chave-demo-da-coingecko)
+16. [Como obter as chaves das APIs de cotação](#16-como-obter-as-chaves-das-apis-de-cotação)
 17. [Limitações conhecidas](#17-limitações-conhecidas)
 18. [Segurança](#18-segurança)
 19. [LGPD e ética](#19-lgpd-e-ética)
@@ -122,7 +122,8 @@ avaliada contra o que as plataformas já oferecem:
 GET https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL,GBP-BRL
 ```
 
-- Acesso público, sem autenticação.
+- Funciona no acesso público. Se `AWESOMEAPI_TOKEN` estiver definido, o token é
+  enviado no cabeçalho `x-api-key`, **apenas no servidor**.
 - Ativos: USD/BRL, EUR/BRL, GBP/BRL.
 - Campos consumidos: `code`, `codein`, `name`, `bid`, `ask`, `high`, `low`, `varBid`,
   `pctChange`, `timestamp`, `create_date`.
@@ -406,6 +407,7 @@ Copie `.env.example` para `.env.local` e preencha:
 
 | Variável | Obrigatória | Padrão | Descrição |
 | --- | --- | --- | --- |
+| `AWESOMEAPI_TOKEN` | Não* | — | Token da AwesomeAPI. Sem ele o acesso é público, mas **limitado por IP** — o que inviabiliza hospedagem serverless |
 | `COINGECKO_API_KEY` | Não | — | Chave Demo da CoinGecko. Sem ela, usa-se o acesso público |
 | `AIRTABLE_TOKEN` | Não* | — | Personal Access Token. Sem ele, a aplicação roda em modo memória |
 | `AIRTABLE_BASE_ID` | Não* | — | Id da base (`appXXXXXXXXXXXXXX`) |
@@ -523,7 +525,31 @@ positivo quando aplicável, campo obrigatório, tamanho de campo).
 > O token dá acesso de escrita à sua base. Nunca o versione, nunca o cole em issue,
 > print ou chat.
 
-## 16. Como gerar uma chave Demo da CoinGecko
+## 16. Como obter as chaves das APIs de cotação
+
+### AwesomeAPI — token (obrigatório em hospedagem)
+
+Sem token, a AwesomeAPI libera o acesso público mas aplica **limite por IP**. Em
+máquina local isso funciona; em hospedagem serverless (Vercel, por exemplo) o IP de
+saída é compartilhado entre muitos clientes e a cota chega esgotada, resultando em
+**HTTP 429** já na primeira chamada. Por isso o token é dispensável em
+desenvolvimento e necessário em produção.
+
+1. Crie a conta em [awesomeapi.com.br/auth/signup](https://awesomeapi.com.br/auth/signup)
+   e confirme o e-mail.
+2. Copie a chave na seção de API Keys da sua conta (plano gratuito: 100 mil
+   requisições por mês, sem cache).
+3. Preencha `.env.local`:
+
+   ```
+   AWESOMEAPI_TOKEN=sua_chave_aqui
+   ```
+
+A aplicação envia a chave no cabeçalho `x-api-key`, e não na query string, para que
+o segredo não apareça em URL — que costuma ser registrada em log de proxy e de
+servidor.
+
+### CoinGecko — chave Demo (opcional)
 
 A chave é **opcional** — o projeto funciona no acesso público, com limite menor.
 
@@ -555,9 +581,16 @@ backend.
   a informação existe justamente para tornar isso visível.
 - **Alertas não são marcados como visualizados pela interface.** O campo `Visualizado`
   existe no modelo e no Airtable, mas a ação de marcar ainda não foi implementada.
-- **Limites das APIs públicas.** Sem chave, a CoinGecko aplica limite de requisições por
-  minuto. O cache de 5 minutos e o intervalo entre atualizações manuais existem para
-  manter o consumo bem abaixo desse teto.
+- **Limites das APIs públicas.** Sem chave, a CoinGecko aplica limite por minuto e a
+  AwesomeAPI aplica limite por IP. O cache de 5 minutos e o intervalo entre
+  atualizações manuais existem para manter o consumo abaixo desses tetos.
+- **Hospedagem serverless exige o token da AwesomeAPI.** Em plataformas como a Vercel,
+  o IP de saída é compartilhado entre muitos clientes, então o limite por IP da
+  AwesomeAPI já chega esgotado e as moedas retornam HTTP 429. Configure
+  `AWESOMEAPI_TOKEN` (seção 16). O mesmo vale, em menor grau, para a CoinGecko.
+- **Cache menos eficaz em serverless.** O cache e o limitador de atualização manual
+  vivem na memória do processo. Como cada instância serverless tem a sua, o número de
+  chamadas às APIs externas é maior do que em execução local.
 - **Sem autenticação de usuário.** Qualquer pessoa com acesso à instância local pode
   cadastrar e excluir regras. Coerente com o escopo acadêmico e com a decisão de não
   coletar dados pessoais.

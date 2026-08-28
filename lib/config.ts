@@ -61,6 +61,18 @@ export function getCoinGeckoApiKey(): string | undefined {
   return readString(process.env.COINGECKO_API_KEY);
 }
 
+/**
+ * Token opcional da AwesomeAPI. Permanece exclusivamente no servidor.
+ *
+ * Sem token, a AwesomeAPI aplica limite por IP. Isso funciona em maquina local,
+ * mas nao em hospedagem serverless, onde o IP de saida e compartilhado entre
+ * muitos clientes e a cota ja chega esgotada (HTTP 429). Com token, a cota passa
+ * a ser da conta, e nao do IP.
+ */
+export function getAwesomeApiToken(): string | undefined {
+  return readString(process.env.AWESOMEAPI_TOKEN);
+}
+
 export interface AirtableConfig {
   token: string;
   baseId: string;

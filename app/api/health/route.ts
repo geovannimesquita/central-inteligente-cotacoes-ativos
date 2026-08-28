@@ -12,7 +12,7 @@
 import { CACHE_KEYS, readCache, writeCache } from "@/lib/cache";
 import { isAirtableConfigured } from "@/lib/config";
 import { describeForLog } from "@/lib/errors";
-import { probeAwesomeApi } from "@/lib/integrations/awesome-api";
+import { hasAwesomeApiToken, probeAwesomeApi } from "@/lib/integrations/awesome-api";
 import { hasCoinGeckoApiKey, probeCoinGecko } from "@/lib/integrations/coingecko";
 import { probeAirtable } from "@/lib/integrations/airtable";
 import { handleRoute, jsonOk } from "@/lib/api-response";
@@ -51,8 +51,12 @@ async function buildHealthPayload(): Promise<HealthPayload> {
       name: "AwesomeAPI",
       status: awesome.status,
       purpose: "Cotacoes de moedas tradicionais em relacao ao real.",
-      authentication: "Acesso publico, sem autenticacao.",
-      credentials: "not_required",
+      authentication: hasAwesomeApiToken()
+        ? "Token enviado em cabecalho, apenas no servidor."
+        : "Acesso publico, com limite por IP.",
+      // O token e opcional em maquina local, mas necessario em hospedagem
+      // serverless, onde o IP de saida e compartilhado.
+      credentials: hasAwesomeApiToken() ? "configured" : "not_required",
       detail: awesome.detail,
     },
     {
