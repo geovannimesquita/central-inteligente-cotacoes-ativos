@@ -32,8 +32,7 @@ alertas em um banco no-code (Airtable) e executa uma automação baseada nas cot
 17. [Limitações conhecidas](#17-limitações-conhecidas)
 18. [Segurança](#18-segurança)
 19. [LGPD e ética](#19-lgpd-e-ética)
-20. [Prints da aplicação](#20-prints-da-aplicação)
-21. [Próximos passos](#21-próximos-passos)
+20. [Próximos passos](#20-próximos-passos)
 
 ---
 
@@ -662,21 +661,7 @@ testes automatizados verifica a ausência desses termos nas mensagens geradas.
 - **Nenhuma informação depende apenas de cor:** alta e baixa levam glifo (`▲` / `▼`) e
   texto; os estados das integrações trazem rótulo escrito ao lado do indicador
 
-## 20. Prints da aplicação
-
-> Espaço reservado. Substitua os marcadores pelas capturas de tela.
-
-| Tela | Print |
-| --- | --- |
-| Painel de ativos | `![Painel](docs/prints/painel.png)` |
-| Conversor | `![Conversor](docs/prints/conversor.png)` |
-| Regras cadastradas | `![Regras](docs/prints/regras.png)` |
-| Alertas gerados | `![Alertas](docs/prints/alertas.png)` |
-| Integrações | `![Integrações](docs/prints/integracoes.png)` |
-| Modo sem Airtable | `![Modo memória](docs/prints/modo-memoria.png)` |
-| Layout responsivo | `![Responsivo](docs/prints/responsivo.png)` |
-
-## 21. Próximos passos
+## 20. Próximos passos
 
 - Marcar alertas como visualizados pela interface (`PATCH /api/alerts/{id}`).
 - Agendamento automático da avaliação (cron externo chamando `/api/alerts/evaluate`).
